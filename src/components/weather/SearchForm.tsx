@@ -1,37 +1,35 @@
-import { ChangeEvent, FormEvent, FormEventHandler, useState } from "react";
+import { useState } from "react";
 
 interface Props {
-  city: string,
-  getWeatherData: Function
+  city: string;
+  getWeatherData: (city: string) => void;
 }
-const SearchForm = ({ city , getWeatherData}: Props) => {
-  const [cityName, setCityName] = useState<string>(city);
 
-  const cityNameChangeHandler = (e: ChangeEvent<HTMLInputElement>) => {
-    setCityName(e.target.value);
+const SearchForm = ({ city, getWeatherData }: Props) => {
+  const [inputCity, setInputCity] = useState(city);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (inputCity.trim()) {
+      getWeatherData(inputCity);
+    }
   };
 
-
-const formSubmitHandler  = (e: FormEvent<HTMLFormElement>) => {
-  e.preventDefault()
- getWeatherData(cityName)
-
- }
-
-
   return (
-    <form onSubmit={formSubmitHandler} className="m-auto flex justify-center border-b-2 pb-6 mb-6">
+    <form onSubmit={handleSubmit} className="flex items-center mb-8">
       <input
         type="text"
-        name="cityName"
-        className="border rounded p-3"
-        onChange={cityNameChangeHandler}
-        value={cityName}
+        value={inputCity}
+        onChange={(e) => setInputCity(e.target.value)}
+        placeholder="Enter city name"
+        className="border rounded-l px-4 py-2 w-full sm:w-auto"
       />
-      <input
+      <button
         type="submit"
-        className="bg-primary px-6 py-3 ml-3 text-white rounded"
-      />
+        className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600"
+      >
+        Search
+      </button>
     </form>
   );
 };

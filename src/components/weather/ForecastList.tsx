@@ -1,11 +1,17 @@
-import ForecastItem from "./ForecastItem"
+import { ForecastResponse } from "@/src/types/api/ForecastResponse";
+import ForecastItem from "./ForecastItem";
 
-const ForecastList = () => {
-  return (
-    <div>
-       <ForecastItem/>
-    </div>
-  )
+interface Props {
+  forecast: ForecastResponse | null;
 }
 
-export default ForecastList
+const ForecastList = ({ forecast }: Props) => {
+  if (!forecast) return <p>Loading ....</p>;
+  return (
+    <>
+      <ForecastItem forecast={forecast} />
+    </>
+  );
+};
+
+export default ForecastList;

@@ -1,56 +1,29 @@
-export interface ForecastResponse {
-    coord: Coord
-    weather: Weather[]
-    base: string
-    main: Main
-    visibility: number
-    wind: Wind
-    clouds: Clouds
-    dt: number
-    sys: Sys
-    timezone: number
-    id: number
-    name: string
-    cod: number
-  }
-  
-   interface Coord {
-    lon: number
-    lat: number
-  }
-  
-   interface Weather {
-    id: number
-    main: string
-    description: string
-    icon: string
-  }
-  
-   interface Main {
-    temp: number
-    feels_like: number
-    temp_min: number
-    temp_max: number
-    pressure: number
-    humidity: number
-    sea_level: number
-    grnd_level: number
-  }
-  
-   interface Wind {
-    speed: number
-    deg: number
-  }
-  
-   interface Clouds {
-    all: number
-  }
-  
-   interface Sys {
-    type: number
-    id: number
-    country: string
-    sunrise: number
-    sunset: number
-  }
-  
+export type ForecastResponse = {
+  days: Array<any>
+  address: string
+  datetime: string
+  datetimeEpoch: number
+  temp: number
+  feelslike: number
+  humidity: number
+  dew: number
+  precip: number
+  precipprob: number
+  snow: number
+  snowdepth: number
+  preciptype: Array<string>
+  windgust: number
+  windspeed: number
+  winddir: number
+  pressure: number
+  visibility: number
+  cloudcover: number
+  solarradiation: number
+  solarenergy: number
+  uvindex: number
+  severerisk: number
+  conditions: string
+  icon: string
+  stations: Array<string>
+  source: string
+}

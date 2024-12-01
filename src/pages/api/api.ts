@@ -1,5 +1,4 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-// import type { NextApiRequest, NextApiResponse } from "next";
+
 
 import { ForecastResponse } from "@/src/types/api/ForecastResponse";
 import { WeatherResponse } from "@/src/types/api/WeatherResponse";
@@ -10,10 +9,7 @@ const apiKey =  "3dce9b1c66837262a25b3f448d354a76"
 interface WeatherProps {
   city: string;
 }
-interface ForecastProps {
-  lat: string;
-  lon: string;
-}
+
 export async function callWeatherApi({ city }: WeatherProps) :Promise<WeatherResponse> {
   const res = await fetch(
     baseUrl + `weather?q=${city}&appid=${apiKey}&units=metric`
@@ -21,9 +17,9 @@ export async function callWeatherApi({ city }: WeatherProps) :Promise<WeatherRes
   return await res.json();
 }
 
-export async function callForecastApi({ lat, lon }: ForecastProps) :Promise<ForecastResponse> {
+export async function callForecastApi({ city }: WeatherProps) :Promise<ForecastResponse> {
   const res = await fetch(
-     baseUrl + `onecall?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`
+    `https://weather.visualcrossing.com/VisualCrossingWebServices/rest/services/timeline/${city}?unitGroup=metric&include=days&key=7VVFUATZ7YTVCA8DU8W3VFW77&contentType=json`
   );
   return await res.json();
 }

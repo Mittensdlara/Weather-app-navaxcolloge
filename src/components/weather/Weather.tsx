@@ -1,15 +1,20 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ForecastList from "./ForecastList";
 import SearchForm from "./SearchForm";
 import WeatherInfo from "./WeatherInfo";
-import { callWeatherApi } from "@/src/pages/api/api";
-import { log } from "console";
+import { callForecastApi, callWeatherApi } from "@/src/pages/api/api";
+import { ForecastResponse } from "@/src/types/api/ForecastResponse";
 
-interface Props {
+interface Weather {
   city: string;
+  wind: number;
+  humidity: number;
+  description: string;
+  icon: string;
+  daily: [];
 }
 
-const Weather = ({ city }: Props) => {
+const Weather = () => {
   const [weatherState, setWeatherState] = useState<Weather>({
     city: "",
     wind: 0,
@@ -18,28 +23,50 @@ const Weather = ({ city }: Props) => {
     icon: "",
     daily: [],
   });
+  const [forecastState, setForecastState] = useState<ForecastResponse | null>(
+    null
+  );
+  const [loading, setLoading] = useState<boolean>(true); 
 
   const getWeatherData = async (city: string) => {
-    const response = await callWeatherApi({ city });
-    const weather: Weather = {
-      city: response.name,
-      wind: response.wind.speed,
-      humidity: response.main.humidity,
-      description: response.weather[0].description,
-      icon: response.weather[0].icon,
-      daily: [],
-    };
-    setWeatherState(weather);
+    try {
+      setLoading(true); 
+
+      const weatherResponse = await callWeatherApi({ city });
+      const weather: Weather = {
+        city: weatherResponse.name,
+        wind: weatherResponse.wind.speed,
+        humidity: weatherResponse.main.humidity,
+        description: weatherResponse.weather[0].description,
+        icon: weatherResponse.weather[0].icon,
+        daily: [],
+      };
+      setWeatherState(weather);
+
+      const forecastResponse = await callForecastApi({ city });
+      setForecastState(forecastResponse);
+    } catch (error) {
+      console.error("Error fetching weather data:", error);
+    } finally {
+      setLoading(false); 
+    }
   };
-  if (weatherState.city.length === 0) {
-    getWeatherData(city);
-  }
+
+  useEffect(() => {
+    getWeatherData("Tehran");
+  }, []);
 
   return (
-    <div className={"bg-white shadow mt-4 rounded-2xl p-8 py-16"}>
-      <SearchForm city={city} getWeatherData={getWeatherData}/>
-      <WeatherInfo weather={weatherState}/>
-      <ForecastList />
+    <div className="bg-white shadow mt-4 rounded-2xl p-8 py-16 max-w-4xl mx-auto">
+      <SearchForm city={weatherState.city} getWeatherData={getWeatherData} />
+      {loading ? (
+        <p className="text-center text-gray-500">Loading weather data...</p>
+      ) : (
+        <>
+          <WeatherInfo weather={weatherState} />
+          <ForecastList forecast={forecastState} />
+        </>
+      )}
     </div>
   );
 };
